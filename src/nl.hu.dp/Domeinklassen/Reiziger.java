@@ -10,6 +10,7 @@ public class Reiziger {
     private String tussenvoegsel = null;
     private String achternaam;
     private Date geboortedatum;
+    private Adres adres;
 
     public Reiziger(){
     }
@@ -67,6 +68,12 @@ public class Reiziger {
         return geboortedatum;
     }
 
+    public Adres getAdres() {return adres;}
+
+    public void setAdres(Adres adres) {
+        this.adres = adres;
+    }
+
     public void setGeboortedatum(Date geboortedatum) {
         this.geboortedatum = geboortedatum;
     }
@@ -91,12 +98,15 @@ public class Reiziger {
             voorletters_metpunt += ".";
         }
 
-        String resultaat = String.format("#%d %s%s %s (%s)",
+        String resultaat = String.format("Reiziger #%d %s%s %s (%s), Adres {#%d %s %s}",
                 reiziger_id,
                 voorletters_metpunt,
                 (tussenvoegsel != null) ? " " + tussenvoegsel : "",
                 achternaam,
-                formattedDate);
+                formattedDate,
+                adres.getAdres_id(),
+                adres.getPostcode(),
+                adres.getHuisnummer());
         return resultaat;
     }
 }

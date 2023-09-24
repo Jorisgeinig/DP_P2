@@ -1,8 +1,7 @@
 package Main;
 
-import Domeinklassen.Reiziger;
-import Domeinklassen.ReizigerDAO;
-import Domeinklassen.ReizigerDAOPsql;
+import Domeinklassen.*;
+import org.postgresql.util.PSQLException;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -63,6 +62,33 @@ public class Main {
         System.out.println("[TEST] Zoek reiziger(s) o.b.v geboortedatum: " + (rdao.findByGbdatum("2002-12-03")));
     }
 
+    private static void testAdres(AdresDAO adao) throws SQLException {
+        System.out.println("\n---------- Test AdresDAO -------------");
+
+
+        Reiziger wopke = new Reiziger(88, "W", "", "Hoekstra", java.sql.Date.valueOf("1976-04-20"));
+        Adres adr1 = new Adres(6, "8834IK", "34", "Hogeweg", "Hoevelaken", wopke);
+        int aantal_adres = adao.findAll().size();
+        wopke.setAdres(adr1);
+        adao.getRdao().save(wopke);
+        System.out.println("[Test] Eerst " + aantal_adres + " adressen na adao.save zijn er " +adao.findAll().size() + " adressen\n" );
+
+        Adres adr2 = new Adres(6, "2315IK", "32", "huhuhu", "Rotterdeam", wopke);
+        System.out.println("[TEST] update, adres: " + adao.findByReiziger(wopke));
+        wopke.setAdres(adr2);
+        adao.update(adr2);
+        System.out.println("na update: " + adao.findByReiziger(wopke));
+
+        System.out.println("\n[TEST] delete, eerst " + adao.findAll().size() + " adressen" );
+        adao.delete(adr1);
+        System.out.println("Na adao.delete: " + adao.findAll().size() + " adressen\n");
+
+        System.out.println("overzicht van alle adressen na de tests:");
+        for (Adres adres : adao.findAll()) {
+            System.out.println(adres);
+        }
+    }
+
 
     public static void main(String[] args) {
         try {
@@ -72,9 +98,13 @@ public class Main {
         }
 
         ReizigerDAOPsql rdao = new ReizigerDAOPsql(connection);
+        AdresDAOPsql adao = new AdresDAOPsql(connection);
+        rdao.setAdao(adao);
+        adao.setRdao(rdao);
 
         try {
-            testReizigerDAO(rdao);
+          //  testReizigerDAO(rdao);
+            testAdres(adao);
         }
         catch(NullPointerException | SQLException e) {
             System.out.println("Something went wrong: " + e);

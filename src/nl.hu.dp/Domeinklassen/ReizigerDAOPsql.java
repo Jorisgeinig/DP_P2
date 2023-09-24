@@ -7,7 +7,9 @@ import java.util.List;
 
 public class ReizigerDAOPsql implements ReizigerDAO{
 
-    public Connection conn;
+    private Connection conn;
+
+    private AdresDAO adao;
 
     public ReizigerDAOPsql(Connection conn) {
         this.conn = conn;
@@ -31,6 +33,9 @@ public class ReizigerDAOPsql implements ReizigerDAO{
         pst.setString(4, reiziger.getAchternaam());
         pst.setDate(5, reiziger.getGeboortedatum());
         int rowCount = pst.executeUpdate();
+        if (this.adao != null) {
+            this.adao.save(reiziger.getAdres());
+        }
 
         pst.close();
 
@@ -116,5 +121,13 @@ public class ReizigerDAOPsql implements ReizigerDAO{
         }
         statement.close();
         return listReiziger;
+    }
+
+    public void setAdao(AdresDAO adao) {
+        this.adao = adao;
+    }
+
+    public AdresDAO getAdao() {
+        return this.adao;
     }
 }
