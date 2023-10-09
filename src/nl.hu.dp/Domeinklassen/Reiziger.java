@@ -1,6 +1,7 @@
 package Domeinklassen;
 
 import java.sql.Date;
+import java.util.List;
 import java.util.Objects;
 import java.text.SimpleDateFormat;
 
@@ -11,6 +12,7 @@ public class Reiziger {
     private String achternaam;
     private Date geboortedatum;
     private Adres adres;
+    private List<OVChipkaart> ovChipkaarten;
 
     public Reiziger(){
     }
@@ -76,6 +78,18 @@ public class Reiziger {
 
     public void setGeboortedatum(Date geboortedatum) {
         this.geboortedatum = geboortedatum;
+    }
+
+    public List<OVChipkaart> getOvChipkaarten() {
+        return ovChipkaarten;
+    }
+
+    public void setOvChipkaarten(List<OVChipkaart> ovChipkaarten) {
+        this.ovChipkaarten = ovChipkaarten;
+    }
+
+    public void addOvChipkaart(OVChipkaart ovChipkaart) {
+        this.ovChipkaarten.add(ovChipkaart);
     }
 
     public String toString() {

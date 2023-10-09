@@ -89,6 +89,18 @@ public class Main {
         }
     }
 
+    private static void testOVChipkaarten(OVChipkaartDAO odao) throws SQLException {
+        System.out.println("\n---------- Test OVChipkaartDAO -------------");
+      //  System.out.println(odao.getRdao().findAll());
+        OVChipkaart ov1 = new OVChipkaart(12345, java.sql.Date.valueOf("2021-01-01"), 1, 25.00);
+        ov1.setReiziger_id(5);
+        odao.save(ov1);
+        List odaoList = odao.findAll();
+        for (Object o : odaoList) {
+            System.out.println(o.toString());
+        }
+    }
+
 
     public static void main(String[] args) {
         try {
@@ -99,12 +111,15 @@ public class Main {
 
         ReizigerDAOPsql rdao = new ReizigerDAOPsql(connection);
         AdresDAOPsql adao = new AdresDAOPsql(connection);
+        OVChipkaartDAOPsql odao = new OVChipkaartDAOPsql(connection);
         rdao.setAdao(adao);
         adao.setRdao(rdao);
+        odao.setRdao(rdao);
 
         try {
-          //  testReizigerDAO(rdao);
-            testAdres(adao);
+            //testReizigerDAO(rdao);
+           // testAdres(adao);
+            testOVChipkaarten(odao);
         }
         catch(NullPointerException | SQLException e) {
             System.out.println("Something went wrong: " + e);
