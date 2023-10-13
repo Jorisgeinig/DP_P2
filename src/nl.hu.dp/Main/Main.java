@@ -6,6 +6,7 @@ import org.postgresql.util.PSQLException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.SQLOutput;
 import java.util.List;
 
 public class Main {
@@ -91,13 +92,29 @@ public class Main {
 
     private static void testOVChipkaarten(OVChipkaartDAO odao) throws SQLException {
         System.out.println("\n---------- Test OVChipkaartDAO -------------");
-      //  System.out.println(odao.getRdao().findAll());
         OVChipkaart ov1 = new OVChipkaart(12345, java.sql.Date.valueOf("2021-01-01"), 1, 25.00);
-        ov1.setReiziger_id(5);
-        odao.save(ov1);
-        List odaoList = odao.findAll();
-        for (Object o : odaoList) {
-            System.out.println(o.toString());
+        OVChipkaart ov2 = new OVChipkaart(48945, java.sql.Date.valueOf("2022-01-01"), 1, 30.00);
+        Reiziger reiziger1 = new Reiziger(10, "P", "", "Lopemdam", java.sql.Date.valueOf("1986-03-14"));
+        ov1.setReiziger(reiziger1);
+        ov2.setReiziger(reiziger1);
+        List<OVChipkaart> listOV = List.of(ov1, ov2);
+        reiziger1.setOvChipkaarten(listOV);
+
+        System.out.println(reiziger1.getOvChipkaarten());
+        reiziger1.setAdres(new Adres(10, "1234AB", "1", "Straatweg", "Utrecht", reiziger1));
+        System.out.println("[TEST] eerst " + odao.findAll().size() + " ovchipkaarten");
+        odao.getRdao().save(reiziger1);
+        System.out.println("na odao.save: " + odao.findAll().size() + " ovchipkaarten\n");
+
+        System.out.println("[TEST] findAll() geeft de volgende OVChipkaarten:");
+        for (OVChipkaart ov : odao.findAll()) {
+            System.out.println(ov.toString());
+        }
+        System.out.println();
+
+        System.out.println("[TEST] findByReiziger() geeft de volgende OVChipkaarten:");
+        for (OVChipkaart ov : odao.findByReiziger(reiziger1)) {
+            System.out.println(ov.toString());
         }
     }
 
@@ -115,6 +132,7 @@ public class Main {
         rdao.setAdao(adao);
         adao.setRdao(rdao);
         odao.setRdao(rdao);
+        rdao.setOdao(odao);
 
         try {
             //testReizigerDAO(rdao);

@@ -1,6 +1,7 @@
 package Domeinklassen;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.text.SimpleDateFormat;
@@ -12,7 +13,7 @@ public class Reiziger {
     private String achternaam;
     private Date geboortedatum;
     private Adres adres;
-    private List<OVChipkaart> ovChipkaarten;
+    private List<OVChipkaart> ovChipkaarten = new ArrayList<>();
 
     public Reiziger(){
     }

@@ -11,6 +11,8 @@ public class ReizigerDAOPsql implements ReizigerDAO{
 
     private AdresDAO adao;
 
+    private OVChipkaartDAO odao;
+
     public ReizigerDAOPsql(Connection conn) {
         this.conn = conn;
     }
@@ -35,6 +37,12 @@ public class ReizigerDAOPsql implements ReizigerDAO{
         int rowCount = pst.executeUpdate();
         if (this.adao != null) {
             this.adao.save(reiziger.getAdres());
+        }
+
+        if (this.odao != null) {
+            for (OVChipkaart ovChipkaart : reiziger.getOvChipkaarten()) {
+                this.odao.save(ovChipkaart);
+            }
         }
 
         pst.close();
@@ -129,5 +137,12 @@ public class ReizigerDAOPsql implements ReizigerDAO{
 
     public AdresDAO getAdao() {
         return this.adao;
+    }
+
+    public void setOdao(OVChipkaartDAO odao) {
+        this.odao = odao;
+    }
+    public OVChipkaartDAO getOdao() {
+        return this.odao;
     }
 }

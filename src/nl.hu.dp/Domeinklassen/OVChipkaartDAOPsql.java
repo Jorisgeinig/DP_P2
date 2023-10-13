@@ -26,7 +26,7 @@ public class OVChipkaartDAOPsql implements  OVChipkaartDAO{
         pst.setDate(2, ovChipkaart.getGeldig_tot());
         pst.setInt(3, ovChipkaart.getKlasse());
         pst.setDouble(4, ovChipkaart.getSaldo());
-        pst.setInt(5, ovChipkaart.getReiziger_id());
+        pst.setInt(5, ovChipkaart.getReiziger().getReiziger_id());
         int rowCount = pst.executeUpdate();
         pst.close();
         return rowCount > 0;
@@ -44,7 +44,7 @@ public class OVChipkaartDAOPsql implements  OVChipkaartDAO{
             pst.setDate(1, ovChipkaart.getGeldig_tot());
             pst.setInt(2, ovChipkaart.getKlasse());
             pst.setDouble(3, ovChipkaart.getSaldo());
-            pst.setInt(4, ovChipkaart.getReiziger_id());
+            pst.setInt(4, ovChipkaart.getReiziger().getReiziger_id());
             pst.setInt(5, ovChipkaart.getKaart_nummer());
             int rowCount = pst.executeUpdate();
             pst.close();
@@ -77,7 +77,7 @@ public class OVChipkaartDAOPsql implements  OVChipkaartDAO{
             float saldo = rs.getFloat("saldo");
             int reiziger_id = rs.getInt("reiziger_id");
             ovChipkaart = new OVChipkaart(kaart_nummer, geldig_tot, klasse, saldo);
-            ovChipkaart.setReiziger_id(reiziger_id);
+            ovChipkaart.setReiziger(getRdao().findById(reiziger_id));
         }
         rs.close();
         pst.close();
@@ -101,7 +101,7 @@ public class OVChipkaartDAOPsql implements  OVChipkaartDAO{
                 float saldo = rs.getFloat("saldo");
                 int reiziger_id = rs.getInt("reiziger_id");
                 OVChipkaart ovChipkaart = new OVChipkaart(kaart_nummer, geldig_tot, klasse, saldo);
-                ovChipkaart.setReiziger_id(reiziger_id);
+                ovChipkaart.setReiziger(getRdao().findById(reiziger_id));
                 ovChipkaarten.add(ovChipkaart);
             }
             rs.close();
@@ -123,7 +123,7 @@ public class OVChipkaartDAOPsql implements  OVChipkaartDAO{
                 float saldo = rs.getFloat("saldo");
                 int reiziger_id = rs.getInt("reiziger_id");
                 OVChipkaart ovChipkaart = new OVChipkaart(kaart_nummer, geldig_tot, klasse, saldo);
-                ovChipkaart.setReiziger_id(reiziger_id);
+                ovChipkaart.setReiziger(getRdao().findById(reiziger_id));
                 ovChipkaarten.add(ovChipkaart);
             }
             rs.close();
