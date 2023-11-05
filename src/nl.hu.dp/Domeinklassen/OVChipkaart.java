@@ -1,6 +1,7 @@
 package Domeinklassen;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OVChipkaart {
@@ -8,7 +9,8 @@ public class OVChipkaart {
     private Date geldig_tot;
     private int klasse;
     private double saldo;
-    private int reizigerid;;
+    private int reizigerid;
+    private List<Product> productenLijst = new ArrayList<>();
 
     public OVChipkaart(int kaart_nummer, Date geldig_tot, int klasse, double saldo, int reizigerid) {
         this.kaart_nummer = kaart_nummer;
@@ -36,6 +38,20 @@ public class OVChipkaart {
     }
     public void setReizigerid(int reizigerid) {
         this.reizigerid = reizigerid;
+    }
+
+    public void addProduct(Product product){
+        productenLijst.add(product);
+        product.addOvChipkaart(this);
+    }
+
+    public void deleteProduct(Product product){
+        productenLijst.remove(product);
+        product.removeOvChipkaart(this);
+    }
+
+    public List<Product> getProducten(){
+        return productenLijst;
     }
 
     public String toString() {
