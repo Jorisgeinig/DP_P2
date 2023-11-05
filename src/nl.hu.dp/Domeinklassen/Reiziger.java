@@ -93,6 +93,10 @@ public class Reiziger {
         this.ovChipkaarten.add(ovChipkaart);
     }
 
+    public void deleteOvChipkaart(OVChipkaart ovChipkaart) {
+        this.ovChipkaarten.remove(ovChipkaart);
+    }
+
     public String toString() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); // Choose the desired date format
         String formattedDate = dateFormat.format(geboortedatum);

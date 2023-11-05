@@ -76,6 +76,12 @@ public class ReizigerDAOPsql implements ReizigerDAO{
             if (this.adao != null && reiziger.getAdres() != null) {
                 this.adao.update(reiziger.getAdres());
             }
+
+            if (this.odao != null && reiziger.getOvChipkaarten() != null) {
+                for (OVChipkaart ovChipkaart : reiziger.getOvChipkaarten()) {
+                    this.odao.update(ovChipkaart);
+                }
+            }
             return true;
         } catch (SQLException e) {
             System.err.println("Error in update() ReizigerDAOPsql" + e);
@@ -87,6 +93,11 @@ public class ReizigerDAOPsql implements ReizigerDAO{
         try {
             if(this.adao != null && reiziger.getAdres() != null){
                 this.adao.delete(reiziger.getAdres());
+            }
+            if(this.odao != null && reiziger.getOvChipkaarten() != null){
+                for(OVChipkaart ovChipkaart : reiziger.getOvChipkaarten()){
+                    this.odao.delete(ovChipkaart);
+                }
             }
             String statementString = """
                     DELETE FROM reiziger
