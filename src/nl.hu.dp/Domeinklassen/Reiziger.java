@@ -116,14 +116,21 @@ public class Reiziger {
         if (voorletters.length() == 1) {
             voorletters_metpunt += ".";
         }
-
-        String resultaat = String.format("Reiziger #%d %s%s %s (%s), %s",
-                reiziger_id,
-                voorletters_metpunt,
-                (tussenvoegsel != null) ? " " + tussenvoegsel : "",
-                achternaam,
-                formattedDate,
-                adres.toString());
-        return resultaat;
+        if (adres == null) {
+            return String.format("Reiziger #%d %s%s %s (%s)",
+                    reiziger_id,
+                    voorletters_metpunt,
+                    (tussenvoegsel != null) ? " " + tussenvoegsel : "",
+                    achternaam,
+                    formattedDate);
+        } else {
+            return String.format("Reiziger #%d %s%s %s (%s), %s",
+                    reiziger_id,
+                    voorletters_metpunt,
+                    (tussenvoegsel != null) ? " " + tussenvoegsel : "",
+                    achternaam,
+                    formattedDate,
+                    adres);
+        }
     }
 }
