@@ -98,30 +98,49 @@ public class Main {
 
     private static void testOVChipkaarten(OVChipkaartDAO odao) throws SQLException {
         System.out.println("\n---------- Test OVChipkaartDAO -------------");
-        OVChipkaart ov1 = new OVChipkaart(12345, java.sql.Date.valueOf("2021-01-01"), 1, 25.00);
-        OVChipkaart ov2 = new OVChipkaart(48945, java.sql.Date.valueOf("2022-01-01"), 1, 30.00);
+        // Voorbeeld reiziger om de ovchipkaarten aan te koppelen
         Reiziger reiziger1 = new Reiziger(10, "P", "", "Lopemdam", java.sql.Date.valueOf("1986-03-14"));
-        ov1.setReiziger(reiziger1);
-        ov2.setReiziger(reiziger1);
+        odao.getRdao().save(reiziger1);
+
+        OVChipkaart ov1 = new OVChipkaart(12345, java.sql.Date.valueOf("2021-01-01"), 1, 25.00, 10);
+        OVChipkaart ov2 = new OVChipkaart(48945, java.sql.Date.valueOf("2022-01-01"), 1, 30.00, 10);
+
+        // Test save van ovchipkaart
+        System.out.println("[TEST] eerst " + odao.findAll().size() + " ovchipkaarten");
+        odao.save(ov1);
+        System.out.println("na odao.save: " + odao.findAll().size() + " ovchipkaarten\n");
+
+        // Koppel de ovchipkaarten aan de reiziger in java
         List<OVChipkaart> listOV = List.of(ov1, ov2);
         reiziger1.setOvChipkaarten(listOV);
 
-        System.out.println(reiziger1.getOvChipkaarten());
-        reiziger1.setAdres(new Adres(10, "1234AB", "1", "Straatweg", "Utrecht", reiziger1.getReiziger_id()));
-        System.out.println("[TEST] eerst " + odao.findAll().size() + " ovchipkaarten");
-        odao.getRdao().save(reiziger1);
-        System.out.println("na odao.save: " + odao.findAll().size() + " ovchipkaarten\n");
+        // Test update van ovchipkaart
+        System.out.println("[TEST] update, ovchipkaart:\n " + odao.findbyKaartNummer(12345));
+        OVChipkaart ov3 = new OVChipkaart(12345, java.sql.Date.valueOf("2022-01-01"), 2, 50, 10);
+        odao.update(ov3);
+        System.out.println("na update: " + odao.findbyKaartNummer(12345));
 
-        System.out.println("[TEST] findAll() geeft de volgende OVChipkaarten:");
+        // Test findAll van ovchipkaart
+        System.out.println("\n[TEST] findAll() geeft de volgende OVChipkaarten:\n");
         for (OVChipkaart ov : odao.findAll()) {
             System.out.println(ov.toString());
         }
         System.out.println();
 
+        // Test findByReiziger van ovchipkaart
         System.out.println("[TEST] findByReiziger() geeft de volgende OVChipkaarten:");
         for (OVChipkaart ov : odao.findByReiziger(reiziger1)) {
             System.out.println(ov.toString());
         }
+
+        // Test delete van ovchipkaart
+        System.out.println("\n[TEST] delete, eerst " + odao.findAll().size() + " ovchipkaarten" );
+        odao.getRdao().findById(ov1.getReizigerid()).getOvChipkaarten().remove(ov1);
+        odao.delete(ov1);
+        System.out.println("Na odao.delete: " + odao.findAll().size() + " ovchipkaarten\n");
+
+        // delete de aangemaakte reiziger
+        odao.getRdao().delete(reiziger1);
     }
 
     private static void testProductDAO(ProductDAO pdao) throws SQLException {
@@ -130,11 +149,11 @@ public class Main {
         Product p8 = new Product(8, "VakantieDal abbo", "Korting in daluren van vakantie", 10.00);
         Reiziger reiziger = pdao.getOdao().getRdao().findById(10);
 
-        OVChipkaart ov7 = new OVChipkaart(77777, java.sql.Date.valueOf("2021-01-01"), 1, 50.00);
-        ov7.setReiziger(reiziger);
+        OVChipkaart ov7 = new OVChipkaart(77777, java.sql.Date.valueOf("2021-01-01"), 1, 50.00, 10);
+        ov7.setReizigerid(pdao.getOdao().getRdao().findById(10).getReiziger_id());
 
-        OVChipkaart ov8 = new OVChipkaart(88888, java.sql.Date.valueOf("2022-01-01"), 1, 60.00);
-        ov8.setReiziger(reiziger);
+        OVChipkaart ov8 = new OVChipkaart(88888, java.sql.Date.valueOf("2022-01-01"), 1, 60.00, 10);
+        ov8.setReizigerid(pdao.getOdao().getRdao().findById(10).getReiziger_id());
 
         p7.addOvChipkaart(ov7);
         p7.addOvChipkaart(ov8);
@@ -171,8 +190,8 @@ public class Main {
         try {
 
             //testReizigerDAO(rdao);
-            testAdres(adao);
-           // testOVChipkaarten(odao);
+            //testAdres(adao);
+            testOVChipkaarten(odao);
             //testProductDAO(pdao);
 
         }
