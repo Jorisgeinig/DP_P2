@@ -9,5 +9,6 @@ public interface ReizigerDAO {
     public boolean delete(Reiziger reiziger) throws SQLException;
     public Reiziger findById(int id) throws SQLException;
     public List<Reiziger> findByGbdatum(String datum) throws SQLException;
+    public void setAdao(AdresDAO adao);
     public List<Reiziger> findAll() throws SQLException;
 }

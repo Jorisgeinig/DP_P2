@@ -113,15 +113,13 @@ public class Reiziger {
             voorletters_metpunt += ".";
         }
 
-        String resultaat = String.format("Reiziger #%d %s%s %s (%s), Adres {#%d %s %s}",
+        String resultaat = String.format("Reiziger #%d %s%s %s (%s), %s",
                 reiziger_id,
                 voorletters_metpunt,
                 (tussenvoegsel != null) ? " " + tussenvoegsel : "",
                 achternaam,
                 formattedDate,
-                adres.getAdres_id(),
-                adres.getPostcode(),
-                adres.getHuisnummer());
+                adres.toString());
         return resultaat;
     }
 }

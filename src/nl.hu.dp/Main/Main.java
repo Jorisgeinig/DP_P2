@@ -66,27 +66,33 @@ public class Main {
     private static void testAdres(AdresDAO adao) throws SQLException {
         System.out.println("\n---------- Test AdresDAO -------------");
 
-
+        // Voorbeeld reiziger om het adres aan te koppelen
         Reiziger wopke = new Reiziger(88, "W", "", "Hoekstra", java.sql.Date.valueOf("1976-04-20"));
-        Adres adr1 = new Adres(6, "8834IK", "34", "Hogeweg", "Hoevelaken", wopke);
-        int aantal_adres = adao.findAll().size();
-        wopke.setAdres(adr1);
         adao.getRdao().save(wopke);
-        System.out.println("[Test] Eerst " + aantal_adres + " adressen na adao.save zijn er " +adao.findAll().size() + " adressen\n" );
 
-        Adres adr2 = new Adres(6, "2315IK", "32", "huhuhu", "Rotterdeam", wopke);
+        //Maak een adres aan en save deze in de database
+        Adres adr1 = new Adres(6, "8834IK", "34", "Hogeweg", "Hoevelaken", 88);
+        System.out.println("[Test] Eerst " + adao.findAll().size() + " adressen");
+        adao.save(adr1);
+        System.out.println("na adao.save: " + adao.findAll().size() + " adressen\n");
+
+        //Test updaten van adres en test methode findByReiziger()
+        Adres adr2 = new Adres(6, "2315IK", "32", "huhuhu", "Rotterdeam", 88);
         System.out.println("[TEST] update, adres: " + adao.findByReiziger(wopke));
-        wopke.setAdres(adr2);
         adao.update(adr2);
         System.out.println("na update: " + adao.findByReiziger(wopke));
 
+        //Test delete van adres
         System.out.println("\n[TEST] delete, eerst " + adao.findAll().size() + " adressen" );
         adao.delete(adr1);
+        //Delete ook de reiziger die is aangemaakt voor het adres
+        adao.getRdao().delete(wopke);
         System.out.println("Na adao.delete: " + adao.findAll().size() + " adressen\n");
 
-        System.out.println("overzicht van alle adressen na de tests:");
+        //Tot slot een overzicht van alle reizigers met de adressen.
+        System.out.println("overzicht van alle reizigers met adressen na de tests:");
         for (Adres adres : adao.findAll()) {
-            System.out.println(adres);
+            System.out.println(adao.getRdao().findById(adres.getReizigerid()));
         }
     }
 
@@ -101,7 +107,7 @@ public class Main {
         reiziger1.setOvChipkaarten(listOV);
 
         System.out.println(reiziger1.getOvChipkaarten());
-        reiziger1.setAdres(new Adres(10, "1234AB", "1", "Straatweg", "Utrecht", reiziger1));
+        reiziger1.setAdres(new Adres(10, "1234AB", "1", "Straatweg", "Utrecht", reiziger1.getReiziger_id()));
         System.out.println("[TEST] eerst " + odao.findAll().size() + " ovchipkaarten");
         odao.getRdao().save(reiziger1);
         System.out.println("na odao.save: " + odao.findAll().size() + " ovchipkaarten\n");
@@ -118,6 +124,29 @@ public class Main {
         }
     }
 
+    private static void testProductDAO(ProductDAO pdao) throws SQLException {
+        System.out.println("\n---------- Test ProductDAO -------------");
+        Product p7 = new Product(7, "Fietsenstalling abonnement", "Stallen van fiets", 5.00);
+        Product p8 = new Product(8, "VakantieDal abbo", "Korting in daluren van vakantie", 10.00);
+        Reiziger reiziger = pdao.getOdao().getRdao().findById(10);
+
+        OVChipkaart ov7 = new OVChipkaart(77777, java.sql.Date.valueOf("2021-01-01"), 1, 50.00);
+        ov7.setReiziger(reiziger);
+
+        OVChipkaart ov8 = new OVChipkaart(88888, java.sql.Date.valueOf("2022-01-01"), 1, 60.00);
+        ov8.setReiziger(reiziger);
+
+        p7.addOvChipkaart(ov7);
+        p7.addOvChipkaart(ov8);
+
+        System.out.println("[TEST] eerst " + pdao.findAll().size() + " producten");
+        System.out.println("[TEST] eerst " + pdao.getOdao().findAll().size() + " ovchipkaarten");
+        pdao.getOdao().save(ov7);
+        System.out.println("na pdao.getOdao().save: " + pdao.findAll().size() + " producten en " + pdao.getOdao().findAll().size() + " ovchipkaarten\n");
+
+
+    }
+
 
     public static void main(String[] args) {
         try {
@@ -129,15 +158,23 @@ public class Main {
         ReizigerDAOPsql rdao = new ReizigerDAOPsql(connection);
         AdresDAOPsql adao = new AdresDAOPsql(connection);
         OVChipkaartDAOPsql odao = new OVChipkaartDAOPsql(connection);
+        ProductDAOsql pdao = new ProductDAOsql(connection);
         rdao.setAdao(adao);
         adao.setRdao(rdao);
+
         odao.setRdao(rdao);
         rdao.setOdao(odao);
 
+        odao.setPdao(pdao);
+        pdao.setOdao(odao);
+
         try {
+
             //testReizigerDAO(rdao);
-           // testAdres(adao);
-            testOVChipkaarten(odao);
+            testAdres(adao);
+           // testOVChipkaarten(odao);
+            //testProductDAO(pdao);
+
         }
         catch(NullPointerException | SQLException e) {
             System.out.println("Something went wrong: " + e);

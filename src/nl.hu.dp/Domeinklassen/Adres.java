@@ -8,15 +8,15 @@ public class Adres {
     private String huisnummer;
     private String straat;
     private String woonplaats;
-    private Reiziger reiziger;
+    private int reiziger_id;
 
-    public Adres(int adres_id, String postcode, String huisnummer, String straat, String woonplaats, Reiziger reiziger) {
+    public Adres(int adres_id, String postcode, String huisnummer, String straat, String woonplaats, int reiziger_id) {
         this.adres_id = adres_id;
         this.postcode = postcode;
         this.huisnummer = huisnummer;
         this.straat = straat;
         this.woonplaats = woonplaats;
-        this.reiziger = reiziger;
+        this.reiziger_id = reiziger_id;
     }
 
     public int getAdres_id() {
@@ -59,40 +59,16 @@ public class Adres {
         this.woonplaats = woonplaats;
     }
 
-    public Reiziger getReiziger() {
-        return reiziger;
+    public int getReizigerid() {
+        return reiziger_id;
     }
 
-    public void setReiziger(Reiziger reiziger) {
-        this.reiziger = reiziger;
+    public void setReizigerid(int reiziger_id) {
+        this.reiziger_id = reiziger_id;
     }
 
     public String toString() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); // Choose the desired date format
-        String formattedDate = dateFormat.format(reiziger.getGeboortedatum());
-
-
-        String voorletters_metpunt = "";
-        for (int i = 0; i < reiziger.getVoorletters().length(); i++) {
-            voorletters_metpunt += reiziger.getVoorletters().charAt(i);
-
-            if (i < reiziger.getVoorletters().length() - 1) {
-                voorletters_metpunt += ".";
-            }
-        }
-        if (reiziger.getVoorletters().length() > 1) {
-            voorletters_metpunt += ".";
-        }
-        if (reiziger.getVoorletters().length() == 1) {
-            voorletters_metpunt += ".";
-        }
-
-        String resultaat = String.format("Reiziger #%d %s%s %s (%s), Adres {#%d %s %s}",
-                reiziger.getReiziger_id(),
-                voorletters_metpunt,
-                (reiziger.getTussenvoegsel() != null) ? " " + reiziger.getTussenvoegsel() : "",
-                reiziger.getAchternaam(),
-                formattedDate,
+    String resultaat = String.format("Adres {#%d %s %s} ",
                 adres_id,
                 postcode,
                 huisnummer);
