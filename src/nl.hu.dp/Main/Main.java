@@ -145,25 +145,48 @@ public class Main {
 
     private static void testProductDAO(ProductDAO pdao) throws SQLException {
         System.out.println("\n---------- Test ProductDAO -------------");
-        Product p7 = new Product(7, "Fietsenstalling abonnement", "Stallen van fiets", 5.00);
-        Product p8 = new Product(8, "VakantieDal abbo", "Korting in daluren van vakantie", 10.00);
-        Reiziger reiziger = pdao.getOdao().getRdao().findById(10);
 
-        OVChipkaart ov7 = new OVChipkaart(77777, java.sql.Date.valueOf("2021-01-01"), 1, 50.00, 10);
-        ov7.setReizigerid(pdao.getOdao().getRdao().findById(10).getReiziger_id());
 
-        OVChipkaart ov8 = new OVChipkaart(88888, java.sql.Date.valueOf("2022-01-01"), 1, 60.00, 10);
-        ov8.setReizigerid(pdao.getOdao().getRdao().findById(10).getReiziger_id());
-
-        p7.addOvChipkaart(ov7);
-        p7.addOvChipkaart(ov8);
-
-        System.out.println("[TEST] eerst " + pdao.findAll().size() + " producten");
-        System.out.println("[TEST] eerst " + pdao.getOdao().findAll().size() + " ovchipkaarten");
+        // Slaat een ovchipkaart aan om mee te testen
+        OVChipkaart ov7 = new OVChipkaart(77777, java.sql.Date.valueOf("2021-01-01"), 1, 50.00, 5);
         pdao.getOdao().save(ov7);
-        System.out.println("na pdao.getOdao().save: " + pdao.findAll().size() + " producten en " + pdao.getOdao().findAll().size() + " ovchipkaarten\n");
 
+        // Slaat een nieuw product op in de database en koppelt deze aan de ovchipkaart
+        Product product1 = new Product(7, "Weekend Vrij", "Gratis reizen in het weekend", 0.00);
+        Product product2 = new Product(8, "Alleen staan", "Alleen staan in het ov", 0.00);
+        ov7.addProduct(product1);
+        ov7.addProduct(product2);
+        System.out.println("[TEST] eerst " + pdao.findAll().size() + " producten");
+        pdao.save(product1);
+        pdao.save(product2);
+        System.out.println("na twee keer pdao.save: " + pdao.findAll().size() + " producten\n");
 
+        // Test findByOVChipkaart van product
+        System.out.println("[TEST] findByOVChipkaart() geeft de volgende producten:");
+        for (Product product : pdao.findByOVChipkaart(ov7)) {
+            System.out.println(product.toString());
+        }
+
+        // Test update van product
+        System.out.println("[TEST] update, product:\n " + product1);
+        Product product3 = new Product(7, "Doordeweeks vrij", "Gratis reizen doordeweeks", 199.00);
+        pdao.update(product3);
+        System.out.println("na update: " + pdao.findByOVChipkaart(ov7).get(1));
+
+        // Test findAll van product
+        System.out.println("\n[TEST] findAll() geeft de volgende producten:\n");
+        for (Product product : pdao.findAll()) {
+            System.out.println(product.toString());
+        }
+
+        // Test delete van product
+        System.out.println("\n[TEST] delete, eerst " + pdao.findAll().size() + " producten" );
+        pdao.delete(product1);
+        pdao.delete(product2);
+        System.out.println("Na 2 keer pdao.delete: " + pdao.findAll().size() + " producten\n");
+
+        // delete de aangemaakte ovchipkaart
+        pdao.getOdao().delete(ov7);
     }
 
 
@@ -189,10 +212,10 @@ public class Main {
 
         try {
 
-            //testReizigerDAO(rdao);
-            //testAdres(adao);
+            testReizigerDAO(rdao);
+            testAdres(adao);
             testOVChipkaarten(odao);
-            //testProductDAO(pdao);
+            testProductDAO(pdao);
 
         }
         catch(NullPointerException | SQLException e) {
